@@ -1,0 +1,50 @@
+<?php 
+defined('BASEPATH') OR exit('No direct script access allowed');
+	
+	class Mitra extends CI_Controller
+	{	
+		public function __construct()
+  		{
+    		parent::__construct();
+    		$this -> load -> library('form_validation');
+  		}
+		public function index_mitra()
+		{	
+			$data['title'] = 'Catering Home';
+			$data['user']= $this -> db -> get_where('user', ['email' => $this->session->userdata('email')]) -> row_array(); 
+    		$this -> load -> view('templates/header', $data);
+    		$this -> load -> view('mitra/index_mitra');
+    		$this -> load -> view('templates/footer');
+		}
+
+		public function tambah_barang()
+  		{ 
+  			$this-> form_validation -> set_rules('nama', 'Nama', 'required|trim|min_length[5]',[
+      		'required' =>'Nama Tidak Boleh Kosong',
+      		'min_length' => 'Nama terlalu pendek!'
+    		]);
+    		$this-> form_validation -> set_rules('harga', 'Harga', 'required|trim|is_numeric|is_unique[user.email]',[
+      		'required' =>'Email Tidak Boleh Kosong',
+    		]);
+    		$this-> form_validation -> set_rules('deskripsi', 'Deskripsi', 'required|trim|',[
+      		'required' =>'Deskripsi Tidak Boleh Kosong',
+    		]);
+
+    		if($this-> form_validation-> run() == false) {
+			$data['title'] = 'Catering Home';
+			$data['user']= $this -> db -> get_where('user', ['email' => $this->session->userdata('email')]) -> row_array(); 
+    		$this -> load -> view('templates/header', $data);
+    		$this -> load -> view('mitra/tambah_barang');
+    		$this -> load -> view('templates/footer');
+			} else {
+				$data[
+					'nama' => $this -> input -> post('nama'),
+            		'email' => $this -> input -> post('email'),
+            		'image' => 'default.jpg',
+				]
+			}
+		}
+	}
+
+
+ ?>
